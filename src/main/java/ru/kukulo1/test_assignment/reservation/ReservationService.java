@@ -6,13 +6,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import ru.kukulo1.test_assignment.client.Client;
 import ru.kukulo1.test_assignment.client.ClientRepository;
-import ru.kukulo1.test_assignment.reservation.records.AddReservationRecord;
-import ru.kukulo1.test_assignment.reservation.records.CancelReservationRecord;
-import ru.kukulo1.test_assignment.reservation.records.GetReservationsByDateRecord;
+import ru.kukulo1.test_assignment.reservation.records.*;
 import ru.kukulo1.test_assignment.sessionhour.SessionHourRepository;
 
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,7 +28,7 @@ public class ReservationService {
     public ResponseEntity<List<GetReservationsByDateRecord>> getAllReservationsByDate(Date date) {
         return new ResponseEntity<>(reservationRepository.findOccupiedSlotsByDate(date.toLocalDate()), HttpStatus.OK);
     }
-    public ResponseEntity<List<GetReservationsByDateRecord>> getAvailableSlotsByDate(Date date) {
+    public ResponseEntity<List<GetReservationsByDateInterface>> getAvailableSlotsByDate(Date date) {
         return new ResponseEntity<>(reservationRepository.findAvailableSlotsByDate(date.toLocalDate()), HttpStatus.OK);
     }
     public ResponseEntity<String> reserveSessionHour(AddReservationRecord addReservationRecord) {
@@ -67,6 +66,33 @@ public class ReservationService {
 
         reservationRepository.delete(reservation.get());
         return new ResponseEntity<>(String.format("Запись с ID: %s успешно отменена!", cancelReservationRecord.reservationID()), HttpStatus.OK);
+    }
+    public ResponseEntity<List<GetReservationByParameterRecord>> getReservationsByName(String name) {
+        List<Reservation> reservations = reservationRepository.findByClientName(name);
+
+        if (reservations.isEmpty()) {
+            return new ResponseEntity<>(null, HttpStatus.OK);
+        }
+        List<GetReservationByParameterRecord> reservationsRecords = new ArrayList<>();
+
+        for (Reservation r : reservations) {
+            reservationsRecords.add(new GetReservationByParameterRecord(r));
+        }
+        return new ResponseEntity<>(reservationsRecords, HttpStatus.OK);
+    }
+
+    public ResponseEntity<List<GetReservationByParameterRecord>> getReservationsByDate(Date date) {
+        List<Reservation> reservations = reservationRepository.findByDate(date.toLocalDate());
+
+        if (reservations.isEmpty()) {
+            return new ResponseEntity<>(null, HttpStatus.OK);
+        }
+        List<GetReservationByParameterRecord> reservationsRecords = new ArrayList<>();
+
+        for (Reservation r : reservations) {
+            reservationsRecords.add(new GetReservationByParameterRecord(r));
+        }
+        return new ResponseEntity<>(reservationsRecords, HttpStatus.OK);
     }
 
     private boolean doesTimestampHasMinutes(Timestamp timestamp) {

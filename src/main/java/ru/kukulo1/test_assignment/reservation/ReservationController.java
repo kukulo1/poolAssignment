@@ -3,9 +3,7 @@ package ru.kukulo1.test_assignment.reservation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.kukulo1.test_assignment.reservation.records.AddReservationRecord;
-import ru.kukulo1.test_assignment.reservation.records.CancelReservationRecord;
-import ru.kukulo1.test_assignment.reservation.records.GetReservationsByDateRecord;
+import ru.kukulo1.test_assignment.reservation.records.*;
 
 import java.sql.Date;
 import java.util.List;
@@ -22,7 +20,7 @@ public class ReservationController {
         return reservationService.getAllReservationsByDate(date);
     }
     @GetMapping("/available")
-    public ResponseEntity<List<GetReservationsByDateRecord>> getAvailableReservationByDate(@RequestParam Date date) {
+    public ResponseEntity<List<GetReservationsByDateInterface>> getAvailableReservationByDate(@RequestParam Date date) {
         return reservationService.getAvailableSlotsByDate(date);
     }
     @PostMapping("/reserve")
@@ -32,5 +30,15 @@ public class ReservationController {
     @DeleteMapping("/cancel")
     public ResponseEntity<String> cancelReservation(@RequestBody CancelReservationRecord cancelReservationRecord) {
         return reservationService.cancelReservation(cancelReservationRecord);
+    }
+
+    @GetMapping("/byname")
+    public ResponseEntity<List<GetReservationByParameterRecord>> getReservationsByName(@RequestParam String name) {
+        return reservationService.getReservationsByName(name);
+    }
+
+    @GetMapping("/bydate")
+    public ResponseEntity<List<GetReservationByParameterRecord>> getReservationsByDate(@RequestParam Date date) {
+        return reservationService.getReservationsByDate(date);
     }
 }
