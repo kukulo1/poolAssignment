@@ -31,4 +31,12 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
             "LEFT JOIN Reservation r ON sh.id = r.sessionHour.id " +
             "WHERE sh.dateTime = :datetime")
     boolean isSlotAvailable(@Param("datetime") Timestamp datetime);
+
+    List<Reservation> findByClientName(String name);
+
+    @Query("SELECT r FROM Reservation r WHERE DATE(r.sessionHour.dateTime) = :date")
+    List<Reservation> findByDate(@Param("date") LocalDate date);
+
+    @Query("SELECT r FROM Reservation r WHERE r.client.name = :name AND DATE(r.sessionHour.dateTime) = :date")
+    List<Reservation> findByClientNameAndDate(@Param("name") String name, @Param("date") LocalDate date);
 }
