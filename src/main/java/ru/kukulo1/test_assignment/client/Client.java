@@ -1,5 +1,6 @@
 package ru.kukulo1.test_assignment.client;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -36,6 +37,8 @@ public class Client {
         this.phone = client.phone();
         this.email = client.email();
     }
+
+    @JsonIgnore
     public boolean isValid() {
         return name != null && !name.trim().isEmpty() &&
                 email != null && isValidEmail(email) &&
