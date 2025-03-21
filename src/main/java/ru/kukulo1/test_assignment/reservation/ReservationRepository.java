@@ -25,7 +25,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
             "HAVING COUNT(r.id) < 10")
     List<GetReservationsByDateInterface> findAvailableSlotsByDate(@Param("date") LocalDate date);
 
-    @Query("SELECT CASE WHEN sh.id IS NOT NULL THEN COUNT(r.id) < 10 ELSE false END " +
+    @Query("SELECT COUNT(r.id) < 10 " +
             "FROM SessionHour sh " +
             "LEFT JOIN Reservation r ON sh.id = r.sessionHour.id " +
             "WHERE sh.dateTime = :datetime")
@@ -36,6 +36,6 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     @Query("SELECT r FROM Reservation r WHERE DATE(r.sessionHour.dateTime) = :date")
     List<Reservation> findByDate(@Param("date") LocalDate date);
 
-    @Query("SELECT r FROM Reservation r WHERE r.client.name = :name AND DATE(r.sessionHour.dateTime) = :date")
-    List<Reservation> findByClientNameAndDate(@Param("name") String name, @Param("date") LocalDate date);
+    @Query("SELECT r FROM Reservation r WHERE r.client.id = :id AND DATE(r.sessionHour.dateTime) = :date")
+    List<Reservation> findByClientIdAndDate(@Param("id") Long id, @Param("date") LocalDate date);
 }

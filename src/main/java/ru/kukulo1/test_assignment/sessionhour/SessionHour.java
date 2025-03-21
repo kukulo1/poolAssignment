@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
-public class SessionHour {//todo maybe i'll need to set the timezone explicitly
+public class SessionHour {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

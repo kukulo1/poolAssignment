@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import ru.kukulo1.test_assignment.client.Client;
 import ru.kukulo1.test_assignment.client.ClientRepository;
 import ru.kukulo1.test_assignment.reservation.records.*;
+import ru.kukulo1.test_assignment.sessionhour.SessionHour;
 import ru.kukulo1.test_assignment.sessionhour.SessionHourRepository;
 
 import java.time.LocalDate;
@@ -36,19 +37,30 @@ public class ReservationService {
             return new ResponseEntity<>("Клиента с таким ID не найдено!", HttpStatus.BAD_REQUEST);
         }
 
+        if (!reservationRepository.findByClientIdAndDate(addReservationRecord.clientID(), addReservationRecord.localDateTime().toLocalDate()).isEmpty()) {
+            return new ResponseEntity<>(String.format("Попытка второй записи клиента с ID: %s за день!", addReservationRecord.clientID()), HttpStatus.BAD_REQUEST);
+        }
+
+
         if (reservationRepository.isSlotAvailable(addReservationRecord.localDateTime())) {
-            reservationRepository.save(new Reservation(
-                    clientRepository.findById(addReservationRecord.clientID()).get(),
-                    sessionHourRepository.findByDateTime(addReservationRecord.localDateTime()).get()));
-            return new ResponseEntity<>(String.format("Клиент с ID: %s записан на %s", addReservationRecord.clientID(), addReservationRecord.localDateTime().toString()), HttpStatus.OK);
-        } else {
-            if (doesTimestampHasMinutes(addReservationRecord.localDateTime())) {
-                return new ResponseEntity<>("Попытка записаться на неполный час!", HttpStatus.BAD_REQUEST);
-            }
-            else {
-                return new ResponseEntity<>("Попытка записаться на нерабочее время!", HttpStatus.BAD_REQUEST);
+            Optional<SessionHour> sessionHourOpt = sessionHourRepository.findByDateTime(addReservationRecord.localDateTime());
+
+            if (sessionHourOpt.isPresent()) {
+                reservationRepository.save(new Reservation(
+                        clientRepository.findById(addReservationRecord.clientID()).get(),
+                        sessionHourOpt.get()
+                ));
+                return new ResponseEntity<>(String.format("Клиент с ID: %s записан на %s",
+                        addReservationRecord.clientID(), addReservationRecord.localDateTime()), HttpStatus.OK);
             }
         }
+
+        if (doesTimestampHasMinutes(addReservationRecord.localDateTime())) {
+            return new ResponseEntity<>("Попытка записаться на неполный час!", HttpStatus.BAD_REQUEST);
+        } else {
+            return new ResponseEntity<>("Попытка записаться на нерабочее время!", HttpStatus.BAD_REQUEST);
+        }
+
     }
     public ResponseEntity<String> cancelReservation(CancelReservationRecord cancelReservationRecord) {
         Optional<Reservation> reservation = reservationRepository.findById(cancelReservationRecord.reservationID());
