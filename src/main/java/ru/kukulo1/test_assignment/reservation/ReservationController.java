@@ -4,8 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.kukulo1.test_assignment.reservation.records.*;
-
-import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -16,11 +15,11 @@ public class ReservationController {
     public ReservationService reservationService;
 
     @GetMapping("/all")
-    public ResponseEntity<List<GetReservationsByDateRecord>> getAllReservationsByDate(@RequestParam Date date) {
+    public ResponseEntity<List<GetReservationsByDateInterface>> getAllReservationsByDate(@RequestParam LocalDate date) {
         return reservationService.getAllReservationsByDate(date);
     }
     @GetMapping("/available")
-    public ResponseEntity<List<GetReservationsByDateInterface>> getAvailableReservationByDate(@RequestParam Date date) {
+    public ResponseEntity<List<GetReservationsByDateInterface>> getAvailableReservationByDate(@RequestParam LocalDate date) {
         return reservationService.getAvailableSlotsByDate(date);
     }
     @PostMapping("/reserve")
@@ -38,7 +37,7 @@ public class ReservationController {
     }
 
     @GetMapping("/bydate")
-    public ResponseEntity<List<GetReservationByParameterRecord>> getReservationsByDate(@RequestParam Date date) {
+    public ResponseEntity<List<GetReservationByParameterRecord>> getReservationsByDate(@RequestParam LocalDate date) {
         return reservationService.getReservationsByDate(date);
     }
 }
