@@ -25,7 +25,7 @@ public class SessionHourService {
             return new ResponseEntity<>(String.format("На дату %s уже проставлены слоты записей!", date), HttpStatus.BAD_REQUEST);
         }
 
-        for (int hour = startTimeOfDay; hour <= endTimeOfDay; hour++) {
+        for (int hour = startTimeOfDay; hour < endTimeOfDay; hour++) {
             LocalTime time = LocalTime.of(hour, 0, 0, 0);
             LocalDateTime localDateTime = LocalDateTime.of(date, time);
             SessionHour sessionHour = new SessionHour(localDateTime);
@@ -42,7 +42,7 @@ public class SessionHourService {
         if (sessionHourRepository.existsByDate(date)) {
             return new ResponseEntity<>(String.format("На дату %s уже проставлены слоты записей!", date), HttpStatus.BAD_REQUEST);
         }
-        for (int hour = startTimeOfDay; hour <= endTimeOfDay; hour++) {
+        for (int hour = startTimeOfDay; hour < endTimeOfDay; hour++) {
             LocalTime time = LocalTime.of(hour, 0, 0, 0);
             LocalDateTime localDateTime = LocalDateTime.of(date, time);
             SessionHour sessionHour = new SessionHour(localDateTime);
@@ -54,7 +54,7 @@ public class SessionHourService {
         if (sessionHourRepository.existsByDate(date)) {
             return new ResponseEntity<>(String.format("На дату %s уже проставлены слоты записей!", date), HttpStatus.BAD_REQUEST);
         }
-        for (int hour = startTimeOfDay; hour <= endTimeOfDay; hour++) {
+        for (int hour = startTimeOfDay; hour < endTimeOfDay; hour++) {
             LocalTime time = LocalTime.of(hour, 0, 0, 0);
             LocalDateTime localDateTime = LocalDateTime.of(date,time);
             SessionHour sessionHour = new SessionHour(localDateTime);
