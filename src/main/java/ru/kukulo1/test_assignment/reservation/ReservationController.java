@@ -26,6 +26,10 @@ public class ReservationController {
     public ResponseEntity<String> addReservation(@RequestBody AddReservationRecord addReservationRecord) {
         return reservationService.reserveSessionHour(addReservationRecord);
     }
+    @PostMapping("/reserveInterval")
+    public ResponseEntity<String> addReservation(@RequestBody AddReservationForSeveralHoursRecord addReservationForSeveralHoursRecord) {
+        return reservationService.reserveSessionHourInterval(addReservationForSeveralHoursRecord);
+    }
     @DeleteMapping("/cancel")
     public ResponseEntity<String> cancelReservation(@RequestBody CancelReservationRecord cancelReservationRecord) {
         return reservationService.cancelReservation(cancelReservationRecord);
