@@ -20,4 +20,8 @@ public class SessionHour {//todo maybe i'll need to set the timezone explicitly
     private Long id;
 
     private Timestamp dateTime;
+
+    public SessionHour(Timestamp dateTime) {
+        this.dateTime = dateTime;
+    }
 }
