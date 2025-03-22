@@ -16,7 +16,7 @@ import ru.kukulo1.test_assignment.sessionhour.SessionHour;
 public class Reservation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonProperty("orderID")
+    @JsonProperty("orderId")
     private Long id;
 
     @ManyToOne

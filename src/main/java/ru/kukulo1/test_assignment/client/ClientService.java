@@ -35,7 +35,6 @@ public class ClientService {
                         null,
                         HttpStatus.NOT_FOUND
                 );
-
     }
 
 
@@ -45,14 +44,14 @@ public class ClientService {
             clientRepository.save(client);
             return new ResponseEntity<>("Клиент успешно добавлен!", HttpStatus.OK);
         }
-        return new ResponseEntity<>("Одно или несколько полей входных данных некорректны!", HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(String.join("\n", client.getInvalidFields()), HttpStatus.BAD_REQUEST);
     }
     public ResponseEntity<String> updateClient(Client client) {
         if (clientRepository.findById(client.getId()).isEmpty()) {
             return new ResponseEntity<>("Клиента с представленным ID не существует :(", HttpStatus.BAD_REQUEST);
         }
         if (!client.isValid()) {
-            return new ResponseEntity<>("Одно или несколько полей входных данных некорректны!", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(String.join("\n", client.getInvalidFields()), HttpStatus.BAD_REQUEST);
         }
         clientRepository.save(client);
         return new ResponseEntity<>("Клиент успешно обновлён!", HttpStatus.OK);

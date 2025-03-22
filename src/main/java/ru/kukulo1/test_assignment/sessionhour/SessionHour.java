@@ -7,21 +7,20 @@ import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
-public class SessionHour {//todo maybe i'll need to set the timezone explicitly
+public class SessionHour {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Timestamp dateTime;
+    private LocalDateTime dateTime;
 
-    public SessionHour(Timestamp dateTime) {
+    public SessionHour(LocalDateTime dateTime) {
         this.dateTime = dateTime;
     }
 }
