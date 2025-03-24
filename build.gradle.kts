@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "ru.kukulo1"
-version = "0.0.1-SNAPSHOT"
+version = "1.0 PERFECT"
 
 java {
 	toolchain {
@@ -39,9 +39,4 @@ tasks.withType<Test> {
 }
 tasks.bootJar {
 	archiveFileName.set("test_assignment.jar")
-}
-tasks.withType<Jar> {
-	manifest {
-		attributes["Main-Class"] = "ru.kukulo1.test_assignment.TestAssignmentApplication"
-	}
 }
