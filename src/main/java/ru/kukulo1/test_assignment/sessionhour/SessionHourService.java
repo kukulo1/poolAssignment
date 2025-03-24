@@ -16,50 +16,48 @@ public class SessionHourService {
     private SessionHourRepository sessionHourRepository;
 
     public ResponseEntity<String> addRegularWorkingDay(LocalDate date) {
-        //time in hours (24-hour time format)
-        //regular working day - 9:00 - 21:00
-        int startTimeOfDay = 9;
-        int endTimeOfDay = 21;
+        final int START_TIME_OF_DAY = 9;
+        final int END_TIME_OF_DAY = 21;
 
         if (sessionHourRepository.existsByDate(date)) {
-            return new ResponseEntity<>(String.format("На дату %s уже проставлены слоты записей!", date), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(String.format("As of date %s, the reservation slots have already been slotted!", date), HttpStatus.BAD_REQUEST);
         }
 
-        for (int hour = startTimeOfDay; hour < endTimeOfDay; hour++) {
+        for (int hour = START_TIME_OF_DAY; hour < END_TIME_OF_DAY; hour++) {
             LocalTime time = LocalTime.of(hour, 0, 0, 0);
             LocalDateTime localDateTime = LocalDateTime.of(date, time);
             SessionHour sessionHour = new SessionHour(localDateTime);
             sessionHourRepository.save(sessionHour);
         }
-        return new ResponseEntity<>(String.format("Дата %s назначена рабочим днем. Время работы: %s:00 - %s:00", date, startTimeOfDay, endTimeOfDay), HttpStatus.OK);
+        return new ResponseEntity<>(String.format("The date %s is designated as a business day. Working hours: %s:00 - %s:00", date, START_TIME_OF_DAY, END_TIME_OF_DAY), HttpStatus.OK);
     }
+
     public ResponseEntity<String> addStandardHoliday(LocalDate date) {
-        //time in hours (24-hour time format)
-        //regular working day - 9:00 - 18:00
-        int startTimeOfDay = 9;
-        int endTimeOfDay = 18;
+        int START_TIME_OF_DAY = 9;
+        int END_TIME_OF_DAY = 18;
 
         if (sessionHourRepository.existsByDate(date)) {
-            return new ResponseEntity<>(String.format("На дату %s уже проставлены слоты записей!", date), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(String.format("As of date %s, the reservation slots have already been slotted!", date), HttpStatus.BAD_REQUEST);
         }
-        for (int hour = startTimeOfDay; hour < endTimeOfDay; hour++) {
+        for (int hour = START_TIME_OF_DAY; hour < END_TIME_OF_DAY; hour++) {
             LocalTime time = LocalTime.of(hour, 0, 0, 0);
             LocalDateTime localDateTime = LocalDateTime.of(date, time);
             SessionHour sessionHour = new SessionHour(localDateTime);
             sessionHourRepository.save(sessionHour);
         }
-        return new ResponseEntity<>(String.format("Дата %s назначена праздничным днем. Время работы: %s:00 - %s:00", date, startTimeOfDay, endTimeOfDay), HttpStatus.OK);
+        return new ResponseEntity<>(String.format("The date %s is designated as a holiday. Working hours: %s:00 - %s:00", date, START_TIME_OF_DAY, END_TIME_OF_DAY), HttpStatus.OK);
     }
-    public ResponseEntity<String> addCustomHoliday(LocalDate date, int startTimeOfDay, int endTimeOfDay) {
+
+    public ResponseEntity<String> addCustomHoliday(LocalDate date, int START_TIME_OF_DAY, int END_TIME_OF_DAY) {
         if (sessionHourRepository.existsByDate(date)) {
-            return new ResponseEntity<>(String.format("На дату %s уже проставлены слоты записей!", date), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(String.format("As of date %s, the record slots have already been slotted!", date), HttpStatus.BAD_REQUEST);
         }
-        for (int hour = startTimeOfDay; hour < endTimeOfDay; hour++) {
+        for (int hour = START_TIME_OF_DAY; hour < END_TIME_OF_DAY; hour++) {
             LocalTime time = LocalTime.of(hour, 0, 0, 0);
-            LocalDateTime localDateTime = LocalDateTime.of(date,time);
+            LocalDateTime localDateTime = LocalDateTime.of(date, time);
             SessionHour sessionHour = new SessionHour(localDateTime);
             sessionHourRepository.save(sessionHour);
         }
-        return new ResponseEntity<>(String.format("Дата %s назначена праздничным днем. Время работы: %s:00 - %s:00", date, startTimeOfDay, endTimeOfDay), HttpStatus.OK);
+        return new ResponseEntity<>(String.format("The date %s is designated as a holiday. Working hours: %s:00 - %s:00", date, START_TIME_OF_DAY, END_TIME_OF_DAY), HttpStatus.OK);
     }
 }

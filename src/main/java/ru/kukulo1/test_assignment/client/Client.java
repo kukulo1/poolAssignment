@@ -8,7 +8,7 @@ import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import ru.kukulo1.test_assignment.client.records.AddClientRecord;
+import ru.kukulo1.test_assignment.client.dto.AddClientDTO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,10 +34,11 @@ public class Client {
         this.email = email;
         this.phone = phone;
     }
-    public Client(AddClientRecord client) {
-        this.name = client.name();
-        this.phone = client.phone();
-        this.email = client.email();
+
+    public Client(AddClientDTO client) {
+        this.name = client.getName();
+        this.phone = client.getPhone();
+        this.email = client.getEmail();
     }
 
     @JsonIgnore

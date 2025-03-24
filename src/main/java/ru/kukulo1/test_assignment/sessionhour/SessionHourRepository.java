@@ -15,7 +15,6 @@ public interface SessionHourRepository extends JpaRepository<SessionHour, Long> 
     @Query("SELECT sh FROM SessionHour sh WHERE DATE(sh.dateTime) = :date")
     List<SessionHour> findByDate(@Param("date") LocalDate date);
 
-    // Метод для проверки наличия SessionHour на указанную дату
     @Query("SELECT CASE WHEN COUNT(sh) > 0 THEN true ELSE false END FROM SessionHour sh WHERE DATE(sh.dateTime) = :date")
     boolean existsByDate(@Param("date") LocalDate date);
 }

@@ -37,3 +37,11 @@ dependencies {
 tasks.withType<Test> {
 	useJUnitPlatform()
 }
+tasks.bootJar {
+	archiveFileName.set("test_assignment.jar")
+}
+tasks.withType<Jar> {
+	manifest {
+		attributes["Main-Class"] = "ru.kukulo1.test_assignment.TestAssignmentApplication"
+	}
+}
