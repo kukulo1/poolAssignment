@@ -34,15 +34,15 @@ public class ReservationService {
     }
     public ResponseEntity<String> reserveSessionHour(AddReservationDTO addReservationDTO) {
         if (clientRepository.findById(addReservationDTO.clientId()).isEmpty()) {
-            return new ResponseEntity<>("Клиента с таким ID не найдено!", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("No client with this ID was found!", HttpStatus.BAD_REQUEST);
         }
 
         if (addReservationDTO.dateTime().toLocalDate().isBefore(LocalDate.now())) {
-            return new ResponseEntity<>("Невозможно записаться на прошедшую дату!", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Unable to reserve for a past date!", HttpStatus.BAD_REQUEST);
         }
 
         if (!reservationRepository.findByClientIdAndDate(addReservationDTO.clientId(), addReservationDTO.dateTime().toLocalDate()).isEmpty()) {
-            return new ResponseEntity<>(String.format("Попытка второй записи клиента с ID: %s за день!", addReservationDTO.clientId()), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(String.format("Attempting the second client's(ID:%s) reservation for the day!", addReservationDTO.clientId()), HttpStatus.BAD_REQUEST);
         }
 
 
@@ -54,15 +54,15 @@ public class ReservationService {
                         clientRepository.findById(addReservationDTO.clientId()).get(),
                         sessionHourOpt.get()
                 ));
-                return new ResponseEntity<>(String.format("Клиент с ID: %s записан на %s",
+                return new ResponseEntity<>(String.format("Client with ID: %s has reservation on %s",
                         addReservationDTO.clientId(), addReservationDTO.dateTime()), HttpStatus.OK);
             }
         }
 
         if (doesTimestampHasMinutes(addReservationDTO.dateTime())) {
-            return new ResponseEntity<>("Попытка записаться на неполный час!", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Attempting to reserve partial hour!", HttpStatus.BAD_REQUEST);
         } else {
-            return new ResponseEntity<>("Попытка записаться на нерабочее время!", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Attempting to reserve at non-working hours!", HttpStatus.BAD_REQUEST);
         }
     }
     public ResponseEntity<String> cancelReservation(CancelReservationDTO cancelReservationDTO) {
@@ -70,21 +70,21 @@ public class ReservationService {
         Optional<Client> client = clientRepository.findById(cancelReservationDTO.clientId());
 
         if (reservation.isEmpty()) {
-            return new ResponseEntity<>(String.format("Не удалось найти запись с ID: %s для отмены!", cancelReservationDTO.reservationId()), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(String.format("Could not find a reservation with ID: %s to cancel!", cancelReservationDTO.reservationId()), HttpStatus.BAD_REQUEST);
         }
         if (client.isEmpty()) {
-            return new ResponseEntity<>(String.format("Не удалось найти клиента с ID: %s для отмены!", cancelReservationDTO.clientId()), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(String.format("Could not find a client with ID: %s to cancel!", cancelReservationDTO.clientId()), HttpStatus.BAD_REQUEST);
         }
         if (!reservation.get().getClient().getId().equals(cancelReservationDTO.clientId())) {
-            return new ResponseEntity<>(String.format("Запись с ID: %s не принадлежит клиенту с ID: %s. Отмена невозможна!", cancelReservationDTO.reservationId(), cancelReservationDTO.clientId()), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(String.format("The reservation with ID: %s does not belong to the client with ID: %s!", cancelReservationDTO.reservationId(), cancelReservationDTO.clientId()), HttpStatus.BAD_REQUEST);
         }
 
         if (reservation.get().getSessionHour().getDateTime().toLocalDate().isBefore(LocalDate.now())) {
-            return new ResponseEntity<>("Невозможно отменить запись с прошедшей даты!", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Unable to cancel a reservation from a past date!", HttpStatus.BAD_REQUEST);
         }
 
         reservationRepository.delete(reservation.get());
-        return new ResponseEntity<>(String.format("Запись с ID: %s успешно отменена!", cancelReservationDTO.reservationId()), HttpStatus.OK);
+        return new ResponseEntity<>(String.format("Reservation with ID: %s successfully canceled!", cancelReservationDTO.reservationId()), HttpStatus.OK);
     }
     public ResponseEntity<List<GetReservationByParameterDTO>> getReservationsByName(String name) {
         List<GetReservationByParameterDTO> reservations = reservationRepository.findByClientName(name);
@@ -98,23 +98,23 @@ public class ReservationService {
 
     public ResponseEntity<String> reserveSessionHourInterval(AddReservationForSeveralHoursDTO addReservationForSeveralHoursDTO) {
         if (clientRepository.findById(addReservationForSeveralHoursDTO.clientId()).isEmpty()) {
-            return new ResponseEntity<>("Клиента с таким ID не найдено!", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("No client with this ID was found!", HttpStatus.BAD_REQUEST);
         }
 
         if (addReservationForSeveralHoursDTO.dateTimeStart().toLocalDate().isBefore(LocalDate.now())) {
-            return new ResponseEntity<>("Невозможно записаться на прошедшую дату!", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Unable to reserve for a past date!", HttpStatus.BAD_REQUEST);
         }
 
         if (!reservationRepository.findByClientIdAndDate(addReservationForSeveralHoursDTO.clientId(), addReservationForSeveralHoursDTO.dateTimeStart().toLocalDate()).isEmpty()) {
-            return new ResponseEntity<>(String.format("Попытка второй записи клиента с ID: %s за день!", addReservationForSeveralHoursDTO.clientId()), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(String.format("Attempting the second client's(ID:%s) reservation for the day!", addReservationForSeveralHoursDTO.clientId()), HttpStatus.BAD_REQUEST);
         }
 
         if (addReservationForSeveralHoursDTO.dateTimeStart().isAfter(addReservationForSeveralHoursDTO.dateTimeEnd())) {
-            return new ResponseEntity<>("Время окончания записи раньше чем время её начала!", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("The end time of the reservation is earlier than the start time!", HttpStatus.BAD_REQUEST);
         }
 
         if (!addReservationForSeveralHoursDTO.dateTimeStart().toLocalDate().equals(addReservationForSeveralHoursDTO.dateTimeEnd().toLocalDate())) {
-            return new ResponseEntity<>("Дата начала записи и дата ёё окончания не совпадают!", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("The reservation start date and end date do not match!", HttpStatus.BAD_REQUEST);
         }
 
         List<LocalDateTime> sessionHours = getSlots(addReservationForSeveralHoursDTO.dateTimeStart(), addReservationForSeveralHoursDTO.dateTimeEnd());
@@ -122,9 +122,9 @@ public class ReservationService {
         for (LocalDateTime sessionHour : sessionHours) {
             if (!reservationRepository.isSlotAvailable(sessionHour)) {
                 if (doesTimestampHasMinutes(addReservationForSeveralHoursDTO.dateTimeStart()) || doesTimestampHasMinutes(addReservationForSeveralHoursDTO.dateTimeEnd())) {
-                    return new ResponseEntity<>("Попытка записаться на неполный час!", HttpStatus.BAD_REQUEST);
+                    return new ResponseEntity<>("Attempting to reserve partial hour!", HttpStatus.BAD_REQUEST);
                 } else {
-                    return new ResponseEntity<>("Попытка записаться на нерабочее время!", HttpStatus.BAD_REQUEST);
+                    return new ResponseEntity<>("Attempting to reserve at non-working hours!", HttpStatus.BAD_REQUEST);
                 }
             }
         }
@@ -136,7 +136,7 @@ public class ReservationService {
                     sessionHourOpt.get()
             ));
         }
-        return new ResponseEntity<>(String.format("Клиент с ID: %s записан на %s - %s",
+        return new ResponseEntity<>(String.format("The client with ID: %s has reservation on %s - %s",
                 addReservationForSeveralHoursDTO.clientId(), addReservationForSeveralHoursDTO.dateTimeStart(), addReservationForSeveralHoursDTO.dateTimeEnd()), HttpStatus.OK);
     }
 

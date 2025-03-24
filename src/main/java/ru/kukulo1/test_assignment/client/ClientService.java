@@ -39,18 +39,18 @@ public class ClientService {
         Client client = new Client(clientDTO);
         if (client.isValid()) {
             clientRepository.save(client);
-            return new ResponseEntity<>("Клиент успешно добавлен!", HttpStatus.OK);
+            return new ResponseEntity<>("Client has been successfully added!", HttpStatus.OK);
         }
         return new ResponseEntity<>(String.join("\n", client.getInvalidFields()), HttpStatus.BAD_REQUEST);
     }
     public ResponseEntity<String> updateClient(Client client) {
         if (clientRepository.findById(client.getId()).isEmpty()) {
-            return new ResponseEntity<>("Клиента с представленным ID не существует :(", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("The client with the submitted ID does not exist :(", HttpStatus.BAD_REQUEST);
         }
         if (!client.isValid()) {
             return new ResponseEntity<>(String.join("\n", client.getInvalidFields()), HttpStatus.BAD_REQUEST);
         }
         clientRepository.save(client);
-        return new ResponseEntity<>("Клиент успешно обновлён!", HttpStatus.OK);
+        return new ResponseEntity<>("The client has been successfully updated!", HttpStatus.OK);
     }
 }
