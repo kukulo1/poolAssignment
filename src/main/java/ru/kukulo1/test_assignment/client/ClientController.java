@@ -4,8 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.kukulo1.test_assignment.client.records.AddClientRecord;
-import ru.kukulo1.test_assignment.client.records.GetClientsRecord;
+import ru.kukulo1.test_assignment.client.dto.AddClientDTO;
+import ru.kukulo1.test_assignment.client.dto.GetClientsDTO;
 
 import java.util.List;
 
@@ -18,7 +18,7 @@ public class ClientController {
     private ClientService clientService;
 
     @GetMapping("/all")
-    public ResponseEntity<List<GetClientsRecord>> getAllClients() {
+    public ResponseEntity<List<GetClientsDTO>> getAllClients() {
         return new ResponseEntity<>(clientService.getAllClients(), HttpStatus.OK);
     }
 
@@ -28,7 +28,7 @@ public class ClientController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<String> addClient(@RequestBody AddClientRecord client) {
+    public ResponseEntity<String> addClient(@RequestBody AddClientDTO client) {
         return clientService.addClient(client);
     }
 
