@@ -43,6 +43,7 @@ public class ClientService {
         }
         return new ResponseEntity<>(String.join("\n", client.getInvalidFields()), HttpStatus.BAD_REQUEST);
     }
+
     public ResponseEntity<String> updateClient(Client client) {
         if (clientRepository.findById(client.getId()).isEmpty()) {
             return new ResponseEntity<>("The client with the submitted ID does not exist :(", HttpStatus.BAD_REQUEST);

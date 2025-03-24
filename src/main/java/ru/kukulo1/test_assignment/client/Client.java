@@ -34,6 +34,7 @@ public class Client {
         this.email = email;
         this.phone = phone;
     }
+
     public Client(AddClientDTO client) {
         this.name = client.getName();
         this.phone = client.getPhone();

@@ -31,6 +31,7 @@ public class SessionHourService {
         }
         return new ResponseEntity<>(String.format("The date %s is designated as a business day. Working hours: %s:00 - %s:00", date, START_TIME_OF_DAY, END_TIME_OF_DAY), HttpStatus.OK);
     }
+
     public ResponseEntity<String> addStandardHoliday(LocalDate date) {
         int START_TIME_OF_DAY = 9;
         int END_TIME_OF_DAY = 18;
@@ -46,13 +47,14 @@ public class SessionHourService {
         }
         return new ResponseEntity<>(String.format("The date %s is designated as a holiday. Working hours: %s:00 - %s:00", date, START_TIME_OF_DAY, END_TIME_OF_DAY), HttpStatus.OK);
     }
+
     public ResponseEntity<String> addCustomHoliday(LocalDate date, int START_TIME_OF_DAY, int END_TIME_OF_DAY) {
         if (sessionHourRepository.existsByDate(date)) {
             return new ResponseEntity<>(String.format("As of date %s, the record slots have already been slotted!", date), HttpStatus.BAD_REQUEST);
         }
         for (int hour = START_TIME_OF_DAY; hour < END_TIME_OF_DAY; hour++) {
             LocalTime time = LocalTime.of(hour, 0, 0, 0);
-            LocalDateTime localDateTime = LocalDateTime.of(date,time);
+            LocalDateTime localDateTime = LocalDateTime.of(date, time);
             SessionHour sessionHour = new SessionHour(localDateTime);
             sessionHourRepository.save(sessionHour);
         }
